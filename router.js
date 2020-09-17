@@ -1,75 +1,48 @@
-const express = require('express')
-const router = express.Router()
-const Subscriber = require('../models/subscriber')
+const express = require('express');
+const router = express.Router();
+const mongoose =require('mongoose');
+const Todo = require('./model');
 
 // Getting all
-router.get('/', async (req, res) => {
-  try {
-    const subscribers = await Subscriber.find()
-    res.json(subscribers)
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
+router.get('/', (req, res) => {
+  Todo.find()
+  .then((todos)=> {res.json(todos)});
 })
 
-// Getting One
-router.get('/:id', getSubscriber, (req, res) => {
-  res.json(res.subscriber)
+//Getting One
+router.get('/:id', (req, res) => {
+  Todo.findById(req.params.id)
+  .then((todo)=> {res.json(todo)});
 })
 
 // Creating one
 router.post('/', async (req, res) => {
-  const subscriber = new Subscriber({
+  const todolist = new Todo({
+    id:req.body.id,
     name: req.body.name,
-    subscribedToChannel: req.body.subscribedToChannel
+    email:req.body.email
   })
-  try {
-    const newSubscriber = await subscriber.save()
-    res.status(201).json(newSubscriber)
-  } catch (err) {
-    res.status(400).json({ message: err.message })
-  }
+  todolist.save()
+  .then((todoitem)=> {
+    res.json(todoitem)
+  })
 })
 
 // Updating One
-router.patch('/:id', getSubscriber, async (req, res) => {
-  if (req.body.name != null) {
-    res.subscriber.name = req.body.name
-  }
-  if (req.body.subscribedToChannel != null) {
-    res.subscriber.subscribedToChannel = req.body.subscribedToChannel
-  }
-  try {
-    const updatedSubscriber = await res.subscriber.save()
-    res.json(updatedSubscriber)
-  } catch (err) {
-    res.status(400).json({ message: err.message })
-  }
+router.patch('/:id', async (req, res) => {
+
+  Todo.findByIdAndUpdate(req.params.id, {
+    id:req.body.id,
+    name:req.body.name,
+    email:req.body.email
+  })
+  .then((todoupdate)=> res.json(todoupdate));
+
 })
 
-// Deleting One
-router.delete('/:id', getSubscriber, async (req, res) => {
-  try {
-    await res.subscriber.remove()
-    res.json({ message: 'Deleted Subscriber' })
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
+router.delete('/:id', (req,res,next)=> {
+  Todo.findByIdAndDelete(req.params.id)
+  .then(()=> res.json("Deleted"))
 })
-
-async function getSubscriber(req, res, next) {
-  let subscriber
-  try {
-    subscriber = await Subscriber.findById(req.params.id)
-    if (subscriber == null) {
-      return res.status(404).json({ message: 'Cannot find subscriber' })
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message })
-  }
-
-  res.subscriber = subscriber
-  next()
-}
 
 module.exports = router

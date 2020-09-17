@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const robotSchema = new mongoose.Schema({
+const todoSchema = new mongoose.Schema({
   id: {
     type:String
   },
@@ -19,4 +19,4 @@ const robotSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('Robot', robotSchema)
+module.exports = mongoose.model('Todo', todoSchema)

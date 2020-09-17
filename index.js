@@ -8,9 +8,13 @@ const db=mongoose.connection;
 db.on('error', (error)=> console.log(error) );
 db.once('open', ()=> console.log("database Connected") );
 
-app.get('/', (req,res,next)=> {
-	res.send("Hello world");
-})
+// app.get('/', (req,res,next)=> {
+// 	res.send("Hello world");
+// })
+app.use(express.json())
+
+const todoRouter = require('./router')
+app.use('/todos', todoRouter)
 
 app.listen(3000, ()=> {
 	console.log(" Server Connected ");
