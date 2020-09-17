@@ -1,16 +1,14 @@
 const mongoose = require('mongoose')
 
 const todoSchema = new mongoose.Schema({
-  id: {
-    type:String
-  },
-  name: {
+  taskname: {
     type: String,
     required: true
   },
-  email: {
-    type: String,
-    required: true
+  iscomplete: {
+    type:Boolean,
+    required:true,
+    default:false
   },
   subscribeDate: {
     type: Date,

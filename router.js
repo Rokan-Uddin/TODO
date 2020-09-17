@@ -18,9 +18,7 @@ router.get('/:id', (req, res) => {
 // Creating one
 router.post('/', async (req, res) => {
   const todolist = new Todo({
-    id:req.body.id,
-    name: req.body.name,
-    email:req.body.email
+    taskname: req.body.taskname
   })
   todolist.save()
   .then((todoitem)=> {
@@ -30,11 +28,9 @@ router.post('/', async (req, res) => {
 
 // Updating One
 router.patch('/:id', async (req, res) => {
-
   Todo.findByIdAndUpdate(req.params.id, {
-    id:req.body.id,
-    name:req.body.name,
-    email:req.body.email
+    iscomplete:!req.body.iscomplete,
+    taskname:req.body.taskname
   })
   .then((todoupdate)=> res.json(todoupdate));
 
